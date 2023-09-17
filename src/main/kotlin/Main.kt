@@ -1,3 +1,10 @@
 fun main() {
-    println("Hello World!")
+    while (true) {
+        val input = readln()
+        try {
+            println("${Calculator.calculate(input)}\n")
+        } catch (e: RuntimeException) {
+            println("${e.message}\n")
+        }
+    }
 }
