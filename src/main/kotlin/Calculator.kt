@@ -1,5 +1,8 @@
+import ArgumentsClassifier.isFunctionChar
+import ArgumentsClassifier.isNegationChar
 import ArgumentsClassifier.isOperation
-import java.util.*
+import java.util.Stack
+import kotlin.math.log
 import kotlin.math.pow
 
 object Calculator {
@@ -9,7 +12,9 @@ object Calculator {
 
         for (token in tokens) {
             when {
-                isOperationOrNegation(token) -> handleOperationAndNegation(numbers, token.toSymbol())
+                isNegationChar(token) -> handleNegation(numbers)
+                isOperation(token) -> handleOperation(numbers, token.toSymbol())
+                isFunctionChar(token) -> handleFunction(numbers, token.toSymbol())
                 else -> numbers.push(token)
             }
         }
@@ -19,30 +24,43 @@ object Calculator {
         return numbers.pop().toDouble()
     }
 
-    private fun isOperationOrNegation(char: String) = isOperation(char) || char == Negation.char
-
-    private fun handleOperationAndNegation(numbers: Stack<String>, operation: Symbol) {
+    private fun handleNegation(numbers: Stack<String>) {
         if (numbers.isEmpty()) throw IllegalArgumentsNumberException()
-
         val b = numbers.pop().toDouble()
-        val result = when (operation) {
-            Negation -> b * -1
-            else -> handleOperation(numbers, operation, b)
-        }
+        val result = b * -1
         numbers.push(result.toString())
     }
 
-    private fun handleOperation(numbers: Stack<String>, operation: Symbol, b: Double): Double {
+    private fun handleOperation(numbers: Stack<String>, operation: Symbol) {
+        if (numbers.isEmpty()) throw IllegalArgumentsNumberException()
+
+        val b = numbers.pop().toDouble()
         if (numbers.isEmpty()) throw IllegalArgumentsNumberException()
 
         val a = numbers.pop().toDouble()
-        return when (operation) {
+        val result = when (operation) {
             Operations.Plus -> a + b
             Operations.Minus -> a - b
             Operations.Multiplication -> a * b
             Operations.Division -> a / b
             Operations.Pow -> a.pow(b)
-            else -> throw IllegalArgumentException("Unsupported operation $operation")
+            else -> throw IllegalSymbolException("Unsupported operation $operation")
         }
+        numbers.push(result.toString())
+    }
+
+    private fun handleFunction(numbers: Stack<String>, function: Symbol) {
+        if (numbers.isEmpty()) throw IllegalArgumentsNumberException()
+
+        val b = numbers.pop().toDouble()
+        if (numbers.isEmpty()) throw IllegalArgumentsNumberException()
+
+        val a = numbers.pop().toDouble()
+        val result = when (function) {
+            Functions.Pow -> a.pow(b)
+            Functions.Log -> log(b, a)
+            else -> throw UnsupportedFunctionException("Unsupported function $function")
+        }
+        numbers.push(result.toString())
     }
 }
