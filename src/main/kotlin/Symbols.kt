@@ -7,14 +7,14 @@ sealed interface Symbol {
 }
 
 data object SupportedSymbols : SymbolsSet {
-    override val values = setOf(Delimiter, Negation, Dot, Comma) + Parenthesis.values + Operations.values
+    override val values =
+        setOf(Delimiter, Negation, Dot, Comma) + Parenthesis.values + Operations.values + Functions.values
 }
 
 data object Delimiter : Symbol {
     override val char = " "
 }
 
-// TODO: Delete if unused
 data object Negation : Symbol {
     override val char = "n"
 }
@@ -62,5 +62,23 @@ data object Operations : SymbolsSet {
 
     data object Pow : Operation {
         override val char = "^"
+    }
+}
+
+sealed interface Function : Symbol {
+    val name: String
+}
+
+data object Functions : SymbolsSet {
+    override val values = setOf(Pow, Log)
+
+    data object Pow : Function {
+        override val char = "p"
+        override val name = "pow"
+    }
+
+    data object Log : Function {
+        override val char = "l"
+        override val name = "log"
     }
 }

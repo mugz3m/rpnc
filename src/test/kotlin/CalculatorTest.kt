@@ -11,6 +11,7 @@ class CalculatorTest {
             shouldThrow<IllegalArgumentsNumberException> { Calculator.calculate("+10.9") }
             shouldThrow<IllegalArgumentsNumberException> { Calculator.calculate("(11.3-9)*") }
             shouldThrow<IllegalArgumentsNumberException> { Calculator.calculate("*(11.3-9)") }
+            shouldThrow<IllegalArgumentsNumberException> { Calculator.calculate("log(2,)") }
         }
     }
 
@@ -24,6 +25,10 @@ class CalculatorTest {
             Calculator.calculate("0^0") shouldBe 1
             Calculator.calculate("2^2") shouldBe 4
             Calculator.calculate("2^2") shouldBe 4
+            Calculator.calculate("log(2, 4)") shouldBe 2
+            Calculator.calculate("pow(2, 4)") shouldBe 16
+            Calculator.calculate("pow(4, 1/2)") shouldBe 16
+            Calculator.calculate("1 - 4 * log(1 + 4 * pow(3 * 4, 3), 2) + 3") shouldBe 3.686399856649637
         }
     }
 }

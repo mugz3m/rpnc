@@ -1,5 +1,5 @@
 fun String.toSymbol(): Symbol {
-    if (SupportedSymbols.values.none { it.char == this }) throw IllegalSymbolException("Illegal symbol $this")
+    if (SupportedSymbols.values.none { it.char == this }) throw IllegalSymbolException("Invalid symbol '$this'")
 
     return when (this) {
         Delimiter.char -> Delimiter
@@ -11,11 +11,8 @@ fun String.toSymbol(): Symbol {
         Operations.Multiplication.char -> Operations.Multiplication
         Operations.Division.char -> Operations.Division
         Operations.Pow.char -> Operations.Pow
-        else -> throw IllegalSymbolException("Illegal symbol '$this'")
+        Functions.Pow.name, Functions.Pow.char -> Functions.Pow
+        Functions.Log.name, Functions.Log.char -> Functions.Log
+        else -> throw IllegalSymbolException("Invalid symbol '$this'")
     }
-}
-
-fun StringBuilder.appendSeparately(any: Any): StringBuilder {
-    append(any).append(Delimiter.char)
-    return this
 }
